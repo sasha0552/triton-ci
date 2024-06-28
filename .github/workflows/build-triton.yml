@@ -11,8 +11,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.ref }}
-          repository: ${{ github.event.inputs.repository }}
+          ref: ${{ matrix.triton_commit }}
+          repository: triton-lang/triton
 
       - name: Resolve SOURCE_DATE_EPOCH
         id: source-date-epoch
@@ -25,8 +25,8 @@ jobs:
 
           # List of patches
           patches=(
-            "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/patches/triton/0000-add-support-for-conversion-fp16-to-fp32.patch"
-            "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/patches/triton/0000-fix-max-ptx-version.patch"
+            "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/patches/0000-add-support-for-conversion-fp16-to-fp32.patch"
+            "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/patches/0000-fix-max-ptx-version.patch"
           )
 
           # Apply patches
@@ -53,22 +53,26 @@ jobs:
     strategy:
       matrix:
         python_version: [37, 38, 39, 310, 311, 312]
+        triton_commit: [
+          # 2.0.0
+          826902821051b84794298f2d9c76235a8582b828,
+
+          # 2.1.0
+          da40a1e984bf57c4708daf603eb427442025f99b,
+
+          # 2.2.0
+          0e7b97bd47fc4beb21ae960a516cd9a7ae9bc060,
+
+          # 2.3.0
+          3f8d91bb17f6e7bc33dc995ae0860db89d351c7b,
+
+          # 2.3.1
+          958fccea74da58e7e0595ab88ae6cd3f6795a173,
+        ]
 
 on:
   workflow_dispatch:
     inputs:
-      repository:
-        default: triton-lang/triton
-        description: Source repository
-        required: true
-        type: string
-
-      ref:
-        default: release/2.3.x
-        description: Source ref
-        required: true
-        type: string
-
       tag_name:
         description: Target tag
         required: true
