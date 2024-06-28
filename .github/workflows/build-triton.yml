@@ -51,6 +51,7 @@ jobs:
           tag_name: ${{ github.event.inputs.tag_name }}
 
     strategy:
+      fail-fast: false
       matrix:
         python_version: [37, 38, 39, 310, 311, 312]
         triton_commit: [
@@ -69,7 +70,15 @@ jobs:
           # 2.3.1
           958fccea74da58e7e0595ab88ae6cd3f6795a173,
         ]
+        exclude:
+          - python_version: 312
+            triton_commit: [
+              # 2.0.0
+              826902821051b84794298f2d9c76235a8582b828,
 
+              # 2.1.0
+              da40a1e984bf57c4708daf603eb427442025f99b,
+            ]
 on:
   workflow_dispatch:
     inputs:
